@@ -31,7 +31,7 @@ Function New-Game($minlength = 4, $maxlength = 12) {
 }
 
 
-Function Get-IndexesOfLetter($gamestate, $letter) {
+Function Get-IndexesOfLetter($letter) {
     $indexes = @()
     For($i=0;$i -lt $($gamestate.currentword.length);$i++) {
          if ($gamestate.currentword[$i] -eq $letter) {
@@ -42,7 +42,7 @@ Function Get-IndexesOfLetter($gamestate, $letter) {
 
 }
 
-Function Update-Progress($gamestate, [array]$indexes, $letter) {
+Function Update-Progress([array]$indexes, $letter) {
     $newstring = ""
     For($i=0;$i -lt $($gamestate.progress.length);$i++) {
         if($indexes.Contains($i)) {
@@ -54,7 +54,7 @@ Function Update-Progress($gamestate, [array]$indexes, $letter) {
     $gamestate.progress=$newstring
 }
 
-Function Get-Message($gamestate, $guessedright) {
+Function Get-Message($guessedright) {
     if ($guessedright) {
         return "Correct: $($gamestate.progress)"
     } else {
@@ -72,9 +72,9 @@ Function Guess($letter) {
         $message = "You already guessed this letter! Pick another one."
     } else {
         $gamestate.alreadyGuessed += $letter
-        $indexes = Get-IndexesOfLetter $gamestate $letter
+        $indexes = Get-IndexesOfLetter $letter
         if($indexes.Length -ge 1) {
-            Update-Progress $gamestate $indexes $letter
+            Update-Progress $indexes $letter
             $guessedright = $true
         } else {
             $guessedright = $false
@@ -85,7 +85,7 @@ Function Guess($letter) {
             $message = "This was your fifth incorrect guess, game over! The word was $($gamestate.currentword). Starting a new game."
             New-Game 
         } else {
-            $message = Get-Message $gamestate $guessedright
+            $message = Get-Message $guessedright
         }
     }  
     return $message
